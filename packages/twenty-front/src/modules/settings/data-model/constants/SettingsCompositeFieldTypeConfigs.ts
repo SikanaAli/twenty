@@ -14,6 +14,7 @@ import {
   COMPOSITE_FIELD_SUB_FIELD_LABELS,
   COMPOSITE_FIELD_TYPE_SUB_FIELDS_NAMES,
   CurrencyCode,
+  PRODUCT_BRANDING,
 } from 'twenty-shared/constants';
 import { ConnectedAccountProvider } from 'twenty-shared/types';
 import {
@@ -79,7 +80,7 @@ export const SETTINGS_COMPOSITE_FIELD_TYPE_CONFIGS = {
     exampleValues: [
       {
         amountMicros: 2000000000,
-        currencyCode: CurrencyCode.USD,
+        currencyCode: PRODUCT_BRANDING.defaultCurrencyCode,
       },
       {
         amountMicros: 3000000000,

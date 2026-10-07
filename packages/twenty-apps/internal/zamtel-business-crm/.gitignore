@@ -1,0 +1,11 @@
+/node_modules
+/.pnp
+.pnp.*
+.yarn
+/generated
+/dist
+/.twenty
+/build
+/coverage
+*.tsbuildinfo
+.env*

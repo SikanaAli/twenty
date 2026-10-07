@@ -1,4 +1,5 @@
 import { Helmet } from '@dr.pogodin/react-helmet';
+import { PRODUCT_BRANDING } from 'twenty-shared/constants';
 
 import { useWorkspaceSurface } from '@/ui/layout/hooks/useWorkspaceSurface';
 
@@ -13,9 +14,14 @@ export const PageTitle = (props: PageTitleProps) => {
     return null;
   }
 
+  const title =
+    props.title === PRODUCT_BRANDING.name
+      ? props.title
+      : `${props.title} | ${PRODUCT_BRANDING.name}`;
+
   return (
     <Helmet>
-      <title>{props.title}</title>
+      <title>{title}</title>
     </Helmet>
   );
 };

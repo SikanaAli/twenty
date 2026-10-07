@@ -1,6 +1,6 @@
 import { type FieldMetadataItem } from '@/object-metadata/types/FieldMetadataItem';
 import { isNonEmptyString } from '@sniptt/guards';
-import { CurrencyCode } from 'twenty-shared/constants';
+import { PRODUCT_BRANDING } from 'twenty-shared/constants';
 import { FieldMetadataType } from '~/generated-metadata/graphql';
 import { DEFAULT_DECIMAL_VALUE } from '~/utils/format/formatNumber';
 import { applySimpleQuotesToString } from '~/utils/string/applySimpleQuotesToString';
@@ -24,7 +24,7 @@ export const getFieldMetadataItemInitialValues = (
     fieldMetadataItem.defaultValue?.currencyCode,
   )
     ? fieldMetadataItem.defaultValue?.currencyCode
-    : applySimpleQuotesToString(CurrencyCode.USD);
+    : applySimpleQuotesToString(PRODUCT_BRANDING.defaultCurrencyCode);
 
   const defaultValue = {
     amountMicros: fieldMetadataItem.defaultValue?.amountMicros ?? null,

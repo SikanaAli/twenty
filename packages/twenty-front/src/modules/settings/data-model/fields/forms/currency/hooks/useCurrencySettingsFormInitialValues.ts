@@ -2,7 +2,7 @@ import { useFormContext } from 'react-hook-form';
 
 import { useFieldMetadataItemById } from '@/object-metadata/hooks/useFieldMetadataItemById';
 import { type SettingsDataModelFieldCurrencyFormValues } from '@/settings/data-model/fields/forms/currency/components/SettingsDataModelFieldCurrencyForm';
-import { CurrencyCode } from 'twenty-shared/constants';
+import { PRODUCT_BRANDING } from 'twenty-shared/constants';
 import { getFieldMetadataItemInitialValues } from '~/pages/settings/data-model/utils/getFieldMetadataItemInitialValues';
 import { DEFAULT_DECIMAL_VALUE } from '~/utils/format/formatNumber';
 import { applySimpleQuotesToString } from '~/utils/string/applySimpleQuotesToString';
@@ -27,7 +27,9 @@ export const useCurrencySettingsFormInitialValues = ({
     },
     defaultValue: defaultValue ?? {
       amountMicros: null,
-      currencyCode: applySimpleQuotesToString(CurrencyCode.USD),
+      currencyCode: applySimpleQuotesToString(
+        PRODUCT_BRANDING.defaultCurrencyCode,
+      ),
     },
   };
 

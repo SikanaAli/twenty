@@ -35,6 +35,7 @@ import { useWorkspaceFromInviteHash } from '@/auth/sign-in-up/hooks/useWorkspace
 import { clientConfigApiStatusState } from '@/client-config/states/clientConfigApiStatusState';
 import { useLingui } from '@lingui/react/macro';
 import { useSearchParams } from 'react-router-dom';
+import { PRODUCT_BRANDING } from 'twenty-shared/constants';
 import { isDefined } from 'twenty-shared/utils';
 import { Loader } from 'twenty-ui/primitives/feedback';
 import { themeCssVariables } from 'twenty-ui/theme';
@@ -117,7 +118,7 @@ export const SignInUp = () => {
     }
 
     if (isGlobalScope) {
-      return t`Welcome to Twenty`;
+      return t`Welcome to ${PRODUCT_BRANDING.name}`;
     }
 
     const workspaceName = workspacePublicData?.displayName;

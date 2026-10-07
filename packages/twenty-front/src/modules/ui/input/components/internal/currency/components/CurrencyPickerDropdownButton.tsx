@@ -1,6 +1,6 @@
 import { t } from '@lingui/core/macro';
 import { type KeyboardEvent, useId } from 'react';
-import { CurrencyCode } from 'twenty-shared/constants';
+import { PRODUCT_BRANDING } from 'twenty-shared/constants';
 import { CurrencyPicker } from 'twenty-ui/components';
 
 import { CURRENCY_PICKER_CURRENCIES } from '@/ui/input/components/internal/currency/constants/CurrencyPickerCurrencies';
@@ -30,7 +30,8 @@ export const CurrencyPickerDropdownButton = ({
   const selectedCurrency = CURRENCY_PICKER_CURRENCIES.find(
     ({ code }) => code === selectedCurrencyCode,
   );
-  const currencyCode = selectedCurrency?.code ?? CurrencyCode.USD;
+  const currencyCode =
+    selectedCurrency?.code ?? PRODUCT_BRANDING.defaultCurrencyCode;
 
   return (
     <DropdownRoot dropdownId={dropdownId} type="picker">

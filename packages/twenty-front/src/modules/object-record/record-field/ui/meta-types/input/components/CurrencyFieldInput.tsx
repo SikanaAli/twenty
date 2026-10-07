@@ -3,7 +3,7 @@ import { isNonEmptyString } from '@sniptt/guards';
 
 import { type FieldCurrencyValue } from '@/object-record/record-field/ui/types/FieldMetadata';
 import { CurrencyInput } from '@/ui/field/input/components/CurrencyInput';
-import { CurrencyCode } from 'twenty-shared/constants';
+import { type CurrencyCode, PRODUCT_BRANDING } from 'twenty-shared/constants';
 
 import { useCurrencyField } from '@/object-record/record-field/ui/meta-types/hooks/useCurrencyField';
 
@@ -53,7 +53,7 @@ export const CurrencyFieldInput = () => {
       ? recordCurrencyCode
       : defaultCurrencyCodeIsNotEmpty
         ? defaultCurrencyCodeWithoutSQLQuotes
-        : CurrencyCode.USD;
+        : PRODUCT_BRANDING.defaultCurrencyCode;
 
   const getNewCurrencyValue = ({
     amountText,
