@@ -36,6 +36,27 @@ export type DemoOpportunity = {
   lossReason?: string;
 };
 
+export type DemoContract = {
+  contractNumber: string;
+  name: string;
+  accountName: string;
+  contactEmail: string;
+  opportunityName: string;
+  accountManager: string;
+  salesManager: string;
+  contractType: string;
+  description: string;
+  value: number;
+  effectiveDate: string;
+  expiryDate: string;
+  noticePeriodDays: number;
+  renewalType: string;
+  autoRenewal: boolean;
+  billingFrequency: string;
+  slaServiceTier: string;
+  status: string;
+};
+
 export const DEMO_ACCOUNTS: DemoAccount[] = [
   {
     name: 'Kafue Horizon Manufacturing',
@@ -525,5 +546,194 @@ export const DEMO_OPPORTUNITIES: DemoOpportunity[] = [
     productService: 'CLOUD_DATA_CENTRE',
     accountManager: 'THANDIWE_ZULU',
     salesManager: 'NATASHA_MBEWE',
+  },
+];
+
+export const DEMO_CONTRACTS: DemoContract[] = [
+  {
+    contractNumber: 'ZBC-CTR-000001',
+    name: 'Kafue resilient dedicated internet agreement',
+    accountName: 'Kafue Horizon Manufacturing',
+    contactEmail: 'luyando.tembo@kafue-horizon.example',
+    opportunityName: 'Kafue plant resilient connectivity',
+    accountManager: 'CHILESHE_MWILA',
+    salesManager: 'MWAPE_SAKALA',
+    contractType: 'CONNECTIVITY',
+    description: 'Primary and failover dedicated internet for the Kafue plant.',
+    value: 2880000,
+    effectiveDate: '2025-05-01',
+    expiryDate: '2027-04-30',
+    noticePeriodDays: 60,
+    renewalType: 'MANUAL',
+    autoRenewal: false,
+    billingFrequency: 'MONTHLY',
+    slaServiceTier: 'PRIORITY',
+    status: 'ACTIVE',
+  },
+  {
+    contractNumber: 'ZBC-CTR-000002',
+    name: 'Copper Trail national MPLS agreement',
+    accountName: 'Copper Trail Logistics',
+    contactEmail: 'natasha.musonda@copper-trail.example',
+    opportunityName: 'Copper Trail national SD-WAN',
+    accountManager: 'BUPE_BANDA',
+    salesManager: 'NATASHA_MBEWE',
+    contractType: 'CONNECTIVITY',
+    description: 'Managed MPLS connectivity across national logistics depots.',
+    value: 4560000,
+    effectiveDate: '2025-01-06',
+    expiryDate: '2027-01-05',
+    noticePeriodDays: 60,
+    renewalType: 'RENEGOTIATION',
+    autoRenewal: false,
+    billingFrequency: 'MONTHLY',
+    slaServiceTier: 'MISSION_CRITICAL',
+    status: 'ACTIVE',
+  },
+  {
+    contractNumber: 'ZBC-CTR-000003',
+    name: 'Mukwa managed connectivity service',
+    accountName: 'Mukwa Agro Processing',
+    contactEmail: 'kondwani.lungu@mukwa-agro.example',
+    opportunityName: 'Mukwa managed branch network',
+    accountManager: 'THANDIWE_ZULU',
+    salesManager: 'NATASHA_MBEWE',
+    contractType: 'MANAGED_SERVICES',
+    description:
+      'Managed branch connectivity and proactive service monitoring.',
+    value: 1260000,
+    effectiveDate: '2025-12-01',
+    expiryDate: '2026-12-01',
+    noticePeriodDays: 30,
+    renewalType: 'MANUAL',
+    autoRenewal: false,
+    billingFrequency: 'MONTHLY',
+    slaServiceTier: 'STANDARD',
+    status: 'ACTIVE',
+  },
+  {
+    contractNumber: 'ZBC-CTR-000004',
+    name: 'Northern Star cloud hosting agreement',
+    accountName: 'Northern Star Mining Services',
+    contactEmail: 'chanda.mulenga@northern-star.example',
+    opportunityName: 'Northern Star private cloud',
+    accountManager: 'MUTINTA_PHIRI',
+    salesManager: 'MWAPE_SAKALA',
+    contractType: 'MANAGED_SERVICES',
+    description:
+      'Private cloud hosting for mine operations and reporting workloads.',
+    value: 6240000,
+    effectiveDate: '2025-11-06',
+    expiryDate: '2026-11-05',
+    noticePeriodDays: 30,
+    renewalType: 'RENEGOTIATION',
+    autoRenewal: false,
+    billingFrequency: 'MONTHLY',
+    slaServiceTier: 'MISSION_CRITICAL',
+    status: 'EXPIRING',
+  },
+  {
+    contractNumber: 'ZBC-CTR-000005',
+    name: 'Lusaka Civic enterprise mobile service',
+    accountName: 'Lusaka Civic Technologies',
+    contactEmail: 'musonda.hamaimbo@lusaka-civic.example',
+    opportunityName: 'Civic offices unified communications',
+    accountManager: 'CHILESHE_MWILA',
+    salesManager: 'MWAPE_SAKALA',
+    contractType: 'SERVICE_AGREEMENT',
+    description:
+      'Enterprise mobile connectivity for civic technology field teams.',
+    value: 980000,
+    effectiveDate: '2025-10-21',
+    expiryDate: '2026-10-20',
+    noticePeriodDays: 30,
+    renewalType: 'AUTO_RENEWAL',
+    autoRenewal: true,
+    billingFrequency: 'MONTHLY',
+    slaServiceTier: 'PRIORITY',
+    status: 'EXPIRING',
+  },
+  {
+    contractNumber: 'ZBC-CTR-000006',
+    name: 'Zambezi Fresh bulk SMS service',
+    accountName: 'Zambezi Fresh Foods',
+    contactEmail: 'thandi.mweemba@zambezi-fresh.example',
+    opportunityName: 'Zambezi Fresh mobile workforce',
+    accountManager: 'THANDIWE_ZULU',
+    salesManager: 'NATASHA_MBEWE',
+    contractType: 'SERVICE_AGREEMENT',
+    description:
+      'Bulk SMS service for customer promotions and delivery alerts.',
+    value: 540000,
+    effectiveDate: '2025-10-13',
+    expiryDate: '2026-10-12',
+    noticePeriodDays: 14,
+    renewalType: 'MANUAL',
+    autoRenewal: false,
+    billingFrequency: 'QUARTERLY',
+    slaServiceTier: 'STANDARD',
+    status: 'EXPIRING',
+  },
+  {
+    contractNumber: 'ZBC-CTR-000007',
+    name: 'Meridian health managed WAN renewal',
+    accountName: 'Meridian Health Supplies',
+    contactEmail: 'mwila.soko@meridian-health.example',
+    opportunityName: 'Meridian secure data centre',
+    accountManager: 'MUTINTA_PHIRI',
+    salesManager: 'MWAPE_SAKALA',
+    contractType: 'MANAGED_SERVICES',
+    description:
+      'Renewal workstream for managed WAN across health supply branches.',
+    value: 3120000,
+    effectiveDate: '2025-11-30',
+    expiryDate: '2026-11-30',
+    noticePeriodDays: 30,
+    renewalType: 'RENEGOTIATION',
+    autoRenewal: false,
+    billingFrequency: 'MONTHLY',
+    slaServiceTier: 'PRIORITY',
+    status: 'RENEWAL_IN_PROGRESS',
+  },
+  {
+    contractNumber: 'ZBC-CTR-000008',
+    name: 'Luangwa education cloud hosting',
+    accountName: 'Luangwa Education Network',
+    contactEmail: 'chisomo.njobvu@luangwa-education.example',
+    opportunityName: 'Luangwa schools bandwidth uplift',
+    accountManager: 'CHILESHE_MWILA',
+    salesManager: 'MWAPE_SAKALA',
+    contractType: 'MANAGED_SERVICES',
+    description: 'Cloud hosting for education network collaboration services.',
+    value: 1440000,
+    effectiveDate: '2025-10-01',
+    expiryDate: '2026-10-02',
+    noticePeriodDays: 30,
+    renewalType: 'MANUAL',
+    autoRenewal: false,
+    billingFrequency: 'ANNUALLY',
+    slaServiceTier: 'STANDARD',
+    status: 'EXPIRED',
+  },
+  {
+    contractNumber: 'ZBC-CTR-000009',
+    name: 'Southern Cross IoT connectivity pilot',
+    accountName: 'Southern Cross Hospitality',
+    contactEmail: 'bwalya.nyirenda@southern-cross.example',
+    opportunityName: 'Southern Cross cloud backup expansion',
+    accountManager: 'THANDIWE_ZULU',
+    salesManager: 'NATASHA_MBEWE',
+    contractType: 'FRAMEWORK_AGREEMENT',
+    description:
+      'Closed IoT connectivity pilot for hospitality site monitoring.',
+    value: 760000,
+    effectiveDate: '2025-02-01',
+    expiryDate: '2026-08-31',
+    noticePeriodDays: 30,
+    renewalType: 'MANUAL',
+    autoRenewal: false,
+    billingFrequency: 'ONE_TIME',
+    slaServiceTier: 'STANDARD',
+    status: 'TERMINATED',
   },
 ];

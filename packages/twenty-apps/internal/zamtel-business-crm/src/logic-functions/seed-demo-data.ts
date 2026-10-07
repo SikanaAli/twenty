@@ -1,11 +1,18 @@
 import { CoreApiClient } from 'twenty-client-sdk/core';
-import { DEMO_ACCOUNTS, DEMO_CONTACTS, DEMO_OPPORTUNITIES } from './demo-data';
+import {
+  DEMO_ACCOUNTS,
+  DEMO_CONTACTS,
+  DEMO_CONTRACTS,
+  DEMO_OPPORTUNITIES,
+} from './demo-data';
+import { calculateContractRenewalDetails } from '../utils/contract-intelligence';
 
 type NamedRecord = { id: string; name: string };
 type ContactRecord = {
   id: string;
   emails?: { primaryEmail?: string | null } | null;
 };
+type ContractRecord = { id: string; contractNumber: string };
 
 const zmw = (amount: number) => ({
   amountMicros: amount * 1_000_000,
@@ -69,6 +76,26 @@ const readOpportunities = async (
   } as never)) as { opportunities?: { edges?: { node: NamedRecord }[] } };
 
   return result.opportunities?.edges?.map(({ node }) => node) ?? [];
+};
+
+const readContracts = async (
+  client: CoreApiClient,
+): Promise<ContractRecord[]> => {
+  const result = (await client.query({
+    contracts: {
+      __args: {
+        filter: {
+          contractNumber: {
+            in: DEMO_CONTRACTS.map(({ contractNumber }) => contractNumber),
+          },
+        },
+        first: DEMO_CONTRACTS.length,
+      },
+      edges: { node: { id: true, contractNumber: true } },
+    },
+  } as never)) as { contracts?: { edges?: { node: ContractRecord }[] } };
+
+  return result.contracts?.edges?.map(({ node }) => node) ?? [];
 };
 
 const requireMappedId = (recordIds: Map<string, string>, key: string) => {
@@ -211,9 +238,117 @@ export const seedDemoData = async () => {
           },
         } as never)) as { createOpportunities?: NamedRecord[] });
 
+  const existingContracts = await readContracts(client);
+  const contractNumbers = new Set(
+    existingContracts.map(({ contractNumber }) => contractNumber),
+  );
+  const missingContracts = DEMO_CONTRACTS.filter(
+    ({ contractNumber }) => !contractNumbers.has(contractNumber),
+  );
+  const contractResult =
+    missingContracts.length === 0
+      ? {}
+      : ((await client.mutation({
+          createContracts: {
+            __args: {
+              data: missingContracts.map((contract) => {
+                const renewal = calculateContractRenewalDetails({
+                  expiryDate: contract.expiryDate,
+                  noticePeriodDays: contract.noticePeriodDays,
+                  referenceDate: '2026-10-07',
+                  status: contract.status as never,
+                });
+
+                return {
+                  name: contract.name,
+                  contractNumber: contract.contractNumber,
+                  accountId: requireMappedId(accountIds, contract.accountName),
+                  primaryContactId: requireMappedId(
+                    contactIds,
+                    contract.contactEmail,
+                  ),
+                  opportunityId: requireMappedId(
+                    new Map(
+                      [
+                        ...existingOpportunities,
+                        ...(opportunityResult.createOpportunities ?? []),
+                      ].map(({ name, id }) => [name, id] as const),
+                    ),
+                    contract.opportunityName,
+                  ),
+                  accountManager: contract.accountManager,
+                  salesManager: contract.salesManager,
+                  contractType: contract.contractType,
+                  description: { markdown: contract.description },
+                  contractValue: zmw(contract.value),
+                  currencyCode: 'ZMW',
+                  effectiveDate: contract.effectiveDate,
+                  expiryDate: contract.expiryDate,
+                  noticePeriodDays: contract.noticePeriodDays,
+                  renewalType: contract.renewalType,
+                  autoRenewal: contract.autoRenewal,
+                  billingFrequency: contract.billingFrequency,
+                  slaServiceTier: contract.slaServiceTier,
+                  status: contract.status,
+                  renewalActionDate: renewal.renewalActionDate,
+                  daysUntilExpiry: renewal.daysUntilExpiry,
+                  renewalState: renewal.renewalState,
+                  renewalInsight: renewal.renewalInsight,
+                };
+              }),
+            },
+            id: true,
+            contractNumber: true,
+          },
+        } as never)) as { createContracts?: ContractRecord[] });
+
+  const contractsForSummary = DEMO_CONTRACTS.map((contract) => ({
+    ...contract,
+    renewal: calculateContractRenewalDetails({
+      expiryDate: contract.expiryDate,
+      noticePeriodDays: contract.noticePeriodDays,
+      referenceDate: '2026-10-07',
+      status: contract.status as never,
+    }),
+  }));
+
+  for (const account of DEMO_ACCOUNTS) {
+    const accountContracts = contractsForSummary.filter(
+      ({ accountName }) => accountName === account.name,
+    );
+    const activeContracts = accountContracts.filter(({ status }) =>
+      ['ACTIVE', 'EXPIRING', 'RENEWAL_IN_PROGRESS', 'RENEWED'].includes(status),
+    );
+    const nearestExpiry = accountContracts
+      .filter(({ status }) => status !== 'TERMINATED')
+      .map(({ expiryDate }) => expiryDate)
+      .sort()[0];
+    const contractsRequiringAction = accountContracts.filter(({ renewal }) =>
+      ['ACTION_REQUIRED', 'OVERDUE'].includes(renewal.renewalState),
+    ).length;
+
+    await client.mutation({
+      updateCompanies: {
+        __args: {
+          filter: { id: { in: [requireMappedId(accountIds, account.name)] } },
+          data: {
+            activeContractsCount: activeContracts.length,
+            totalContractValue: zmw(
+              activeContracts.reduce((total, { value }) => total + value, 0),
+            ),
+            nearestContractExpiry: nearestExpiry,
+            contractsRequiringAction,
+          },
+        },
+        id: true,
+      },
+    } as never);
+  }
+
   return {
     accountsCreated: accountResult.createCompanies?.length ?? 0,
     contactsCreated: contactResult.createPeople?.length ?? 0,
     opportunitiesCreated: opportunityResult.createOpportunities?.length ?? 0,
+    contractsCreated: contractResult.createContracts?.length ?? 0,
   };
 };
