@@ -11,8 +11,6 @@ import { COMPANY_SALES_REGION_FIELD_ID } from '../fields/company-sales-region.fi
 
 export const ACCOUNTS_VIEW_ID = '7a100040-0001-4000-8000-000000000001';
 
-const companyFields = STANDARD_OBJECT_UNIVERSAL_IDENTIFIERS.company.fields;
-
 export default defineView({
   universalIdentifier: ACCOUNTS_VIEW_ID,
   name: 'Accounts',
@@ -24,7 +22,8 @@ export default defineView({
   fields: [
     {
       universalIdentifier: '7a100041-0001-4000-8000-000000000001',
-      fieldMetadataUniversalIdentifier: companyFields.name.universalIdentifier,
+      fieldMetadataUniversalIdentifier:
+        STANDARD_OBJECT_UNIVERSAL_IDENTIFIERS.company.fields.name.universalIdentifier,
       position: 0,
       isVisible: true,
       size: 220,
@@ -60,7 +59,7 @@ export default defineView({
     {
       universalIdentifier: '7a100041-0006-4000-8000-000000000006',
       fieldMetadataUniversalIdentifier:
-        companyFields.annualRevenue.universalIdentifier,
+        '60f533b7-2166-4071-a767-ceb0286822fd',
       position: 5,
       isVisible: true,
       size: 150,
@@ -68,7 +67,7 @@ export default defineView({
     {
       universalIdentifier: '7a100041-0007-4000-8000-000000000007',
       fieldMetadataUniversalIdentifier:
-        companyFields.address.universalIdentifier,
+        '20202020-c5ce-4adc-b7b6-9c0979fc55e7',
       position: 6,
       isVisible: true,
       size: 190,

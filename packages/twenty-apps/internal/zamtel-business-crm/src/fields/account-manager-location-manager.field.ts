@@ -1,0 +1,5 @@
+import { defineField, FieldType, OnDeleteAction, RelationType, STANDARD_OBJECT_UNIVERSAL_IDENTIFIERS } from 'twenty-sdk/define';
+import { ACCOUNT_MANAGER_LOCATION_UNIVERSAL_IDENTIFIER } from '../objects/account-manager-location.object';
+import { WORKSPACE_MEMBER_LOCATION_SAMPLES_FIELD_ID } from './workspace-member-field-sales.field';
+export const ACCOUNT_MANAGER_LOCATION_MANAGER_FIELD_ID = '7a100111-0001-4000-8000-000000000001';
+export default defineField({ universalIdentifier: ACCOUNT_MANAGER_LOCATION_MANAGER_FIELD_ID, objectUniversalIdentifier: ACCOUNT_MANAGER_LOCATION_UNIVERSAL_IDENTIFIER, type: FieldType.RELATION, name: 'accountManager', label: 'Account manager', icon: 'IconUserDollar', relationTargetObjectMetadataUniversalIdentifier: STANDARD_OBJECT_UNIVERSAL_IDENTIFIERS.workspaceMember.universalIdentifier, relationTargetFieldMetadataUniversalIdentifier: WORKSPACE_MEMBER_LOCATION_SAMPLES_FIELD_ID, universalSettings: { relationType: RelationType.MANY_TO_ONE, onDelete: OnDeleteAction.SET_NULL, joinColumnName: 'accountManagerId' } });

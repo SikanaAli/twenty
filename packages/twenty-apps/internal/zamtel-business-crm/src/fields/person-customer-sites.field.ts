@@ -1,0 +1,4 @@
+import { defineField, FieldType, RelationType, STANDARD_OBJECT_UNIVERSAL_IDENTIFIERS } from 'twenty-sdk/define';
+import { CUSTOMER_SITE_PRIMARY_CONTACT_FIELD_ID, PERSON_CUSTOMER_SITES_FIELD_ID } from './customer-site-primary-contact.field';
+import { CUSTOMER_SITE_UNIVERSAL_IDENTIFIER } from '../objects/customer-site.object';
+export default defineField({ universalIdentifier: PERSON_CUSTOMER_SITES_FIELD_ID, objectUniversalIdentifier: STANDARD_OBJECT_UNIVERSAL_IDENTIFIERS.person.universalIdentifier, type: FieldType.RELATION, name: 'customerSites', label: 'Customer sites', icon: 'IconMapPin', relationTargetObjectMetadataUniversalIdentifier: CUSTOMER_SITE_UNIVERSAL_IDENTIFIER, relationTargetFieldMetadataUniversalIdentifier: CUSTOMER_SITE_PRIMARY_CONTACT_FIELD_ID, universalSettings: { relationType: RelationType.ONE_TO_MANY } });

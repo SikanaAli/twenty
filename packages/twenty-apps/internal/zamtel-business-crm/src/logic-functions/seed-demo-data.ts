@@ -6,6 +6,12 @@ import {
   DEMO_OPPORTUNITIES,
 } from './demo-data';
 import { calculateContractRenewalDetails } from '../utils/contract-intelligence';
+import {
+  DEMO_CUSTOMER_SITES,
+  DEMO_MANAGER_LOCATIONS,
+  DEMO_PLANNED_VISITS,
+  FIELD_SALES_DEMO_DATE,
+} from './field-sales-demo-data';
 
 type NamedRecord = { id: string; name: string };
 type ContactRecord = {
@@ -345,10 +351,76 @@ export const seedDemoData = async () => {
     } as never);
   }
 
+  const memberResult = (await client.query({
+    workspaceMembers: {
+      __args: { first: 100 },
+      edges: { node: { id: true, name: { firstName: true, lastName: true } } },
+    },
+  } as never)) as { workspaceMembers?: { edges?: { node: { id: string; name?: { firstName?: string | null; lastName?: string | null } | null } }[] } };
+  const memberIds = new Map(
+    (memberResult.workspaceMembers?.edges ?? []).map(({ node }) => [
+      [node.name?.firstName, node.name?.lastName].filter(Boolean).join(' '),
+      node.id,
+    ] as const),
+  );
+
+  const siteResult = (await client.query({
+    customerSites: { __args: { first: 100 }, edges: { node: { id: true, name: true } } },
+  } as never)) as { customerSites?: { edges?: { node: NamedRecord }[] } };
+  const existingSiteNames = new Set((siteResult.customerSites?.edges ?? []).map(({ node }) => node.name));
+  const missingSites = DEMO_CUSTOMER_SITES.filter(({ name }) => !existingSiteNames.has(name));
+  const siteCreateResult = missingSites.length === 0 ? {} : ((await client.mutation({
+    createCustomerSites: {
+      __args: { data: missingSites.map((site) => ({ name: site.name, siteType: site.siteType, siteAddress: site.address, province: site.province, district: site.district, latitude: site.latitude, longitude: site.longitude, active: true, accountId: requireMappedId(accountIds, site.accountName), ...(contactIds.get(site.contactEmail) ? { primaryContactId: contactIds.get(site.contactEmail) } : {}) })) },
+      id: true,
+      name: true,
+    },
+  } as never)) as { createCustomerSites?: NamedRecord[] });
+  const allSites = [...(siteResult.customerSites?.edges ?? []).map(({ node }) => node), ...(siteCreateResult.createCustomerSites ?? [])];
+  const siteIds = new Map(allSites.map(({ name, id }) => [name, id] as const));
+
+  const locationResult = (await client.query({
+    accountManagerLocations: { __args: { first: 100 }, edges: { node: { id: true, name: true } } },
+  } as never)) as { accountManagerLocations?: { edges?: { node: NamedRecord }[] } };
+  const existingLocationNames = new Set((locationResult.accountManagerLocations?.edges ?? []).map(({ node }) => node.name));
+  const missingLocations = DEMO_MANAGER_LOCATIONS.filter(({ name }) => !existingLocationNames.has(name));
+  const locationCreateResult = missingLocations.length === 0 ? {} : ((await client.mutation({
+    createAccountManagerLocations: {
+      __args: { data: missingLocations.map((location) => ({ name: location.name, managerName: location.managerName, latitude: location.latitude, longitude: location.longitude, accuracy: location.accuracy, recordedAt: location.recordedAt, source: location.source, context: location.context, ...(memberIds.get(location.managerName) ? { accountManagerId: memberIds.get(location.managerName) } : {}) })) },
+      id: true,
+      name: true,
+    },
+  } as never)) as { createAccountManagerLocations?: NamedRecord[] });
+
+  const visitResult = (await client.query({
+    plannedVisits: { __args: { first: 100 }, edges: { node: { id: true, name: true } } },
+  } as never)) as { plannedVisits?: { edges?: { node: NamedRecord }[] } };
+  const existingVisitNames = new Set((visitResult.plannedVisits?.edges ?? []).map(({ node }) => node.name));
+  const missingVisits = DEMO_PLANNED_VISITS.filter(({ name }) => !existingVisitNames.has(name));
+  const siteIdByName = new Map(siteIds);
+  const visitCreateResult = missingVisits.length === 0 ? {} : ((await client.mutation({
+    createPlannedVisits: {
+      __args: { data: missingVisits.map((visit) => ({ name: visit.name, managerName: visit.managerName, plannedDate: `${FIELD_SALES_DEMO_DATE}T00:00:00.000Z`, plannedStartTime: visit.plannedStartTime, plannedEndTime: visit.plannedEndTime, sequence: visit.sequence, purpose: visit.purpose, status: visit.status, accountId: requireMappedId(accountIds, visit.accountName), customerSiteId: requireMappedId(siteIdByName, visit.siteName), ...(memberIds.get(visit.managerName) ? { accountManagerId: memberIds.get(visit.managerName) } : {}) })) },
+      id: true,
+      name: true,
+    },
+  } as never)) as { createPlannedVisits?: NamedRecord[] });
+
+  const targetResult = (await client.query({
+    salesTargets: { __args: { filter: { name: { eq: 'October 2026 Field Sales Target' } }, first: 1 }, edges: { node: { id: true, name: true } } },
+  } as never)) as { salesTargets?: { edges?: { node: NamedRecord }[] } };
+  const targetCreateResult = (targetResult.salesTargets?.edges?.length ?? 0) > 0 ? {} : ((await client.mutation({
+    createSalesTargets: { __args: { data: [{ name: 'October 2026 Field Sales Target', targetMonth: `${FIELD_SALES_DEMO_DATE}T00:00:00.000Z`, targetValue: zmw(8000000), currencyCode: 'ZMW' }] }, id: true, name: true },
+  } as never)) as { createSalesTargets?: NamedRecord[] });
+
   return {
     accountsCreated: accountResult.createCompanies?.length ?? 0,
     contactsCreated: contactResult.createPeople?.length ?? 0,
     opportunitiesCreated: opportunityResult.createOpportunities?.length ?? 0,
     contractsCreated: contractResult.createContracts?.length ?? 0,
+    customerSitesCreated: siteCreateResult.createCustomerSites?.length ?? 0,
+    managerLocationsCreated: locationCreateResult.createAccountManagerLocations?.length ?? 0,
+    plannedVisitsCreated: visitCreateResult.createPlannedVisits?.length ?? 0,
+    salesTargetsCreated: targetCreateResult.createSalesTargets?.length ?? 0,
   };
 };
